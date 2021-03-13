@@ -22,5 +22,6 @@ def create_connection(path):
 
 connection=create_connection(path)
 querys.create_Tables(connection)
+querys.insert_snapshots(connection)
 
 

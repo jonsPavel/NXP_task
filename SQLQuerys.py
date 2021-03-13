@@ -1,6 +1,8 @@
 import sqlite3
 import datetime
 
+import finally_generator
+
 def execute_query(query:str, connection: sqlite3.connect):
     cursor = connection.cursor()
     query = query
@@ -55,6 +57,17 @@ def create_Sensors_snapshots(connection: sqlite3.connect):
 	PRIMARY KEY (Date_snapshot,room_id),
     FOREIGN KEY(Room_ID) REFERENCES Warehouse_room(Room_ID) );"""
     return execute_query(query, connection)
+
+
+def insert_snapshots(connection: sqlite3.connect):
+    cursor = connection.cursor()
+    snapshots=finally_generator.create_inserts()
+    query = """INSERT INTO Sensors_snapshots(Date_snapshot, Room_ID, Temperature, Pressure,Wet)
+            VALUES(?,?,?,?,?);"""
+
+    cursor.executemany(query, snapshots)
+    connection.commit()
+    print(f'Строк добавлено: {cursor.rowcount}')
 
 
 def create_Tables(connection: sqlite3.connect):
